@@ -68,37 +68,34 @@ class StorageService {
       throw e.toString();
     }
   }
-Future<bool> updateProductData(
-  String id,
-  String productTitle,
-  double productPrice,
-  int productStock,
-  String productDescription,
-  String? imageName,
-  Uint8List? image,
-) async {
-  try {
-    Product product = Product(
-      id: id,
-      productTitle: productTitle,
-      productPrice: productPrice,
-      productStock: productStock,
-      productDescription: productDescription,
-    );
+  Future<String> updateProductData(  
+      String id,
+      String productTitle,
+      double productPrice,
+      int productStock,
+      String productDescription,
+      String? imageName,
+      Uint8List? image) async {
+    try {
 
-    await _database.collection("products").doc(id).update(product.toMap());
+      Product product = Product(
+        id: id,
+        productTitle: productTitle,
+        productPrice: productPrice,
+        productStock: productStock,
+        productDescription: productDescription,
+      );
+      await _database.collection("products").doc(id).update(product.toMap());
 
-    if (imageName != null && image != null) {
-      await uploadProductImage(id, image, imageName);
+      if (imageName != null || image != null) {
+        await uploadProductImage(id, image!, imageName!);
+      }
+
+      return "true";
+    } catch (e) {
+     return e.toString();
     }
-
-    return true;
-  } catch (e) {
-    print("🔥 Update error: $e");
-    return false;
   }
-}
-
   // issy pehle hamary pas product upload honay ka banega phr image ka
 
   Future<void> uploadProductImage(
