@@ -56,7 +56,7 @@ class _EditProductsState extends State<EditProducts> {
         stock,
         descriptioncontroller.text,
         imageName,
-        _image,s
+        _image,
       );
 
           
