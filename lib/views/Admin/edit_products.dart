@@ -49,14 +49,14 @@ class _EditProductsState extends State<EditProducts> {
       final double price = double.tryParse(priceController.text.trim()) ?? 0;
       final int stock = int.tryParse(stockController.text.trim()) ?? 0;
 
-      final res = await _storageService.updateProductData(
+      var res = await _storageService.updateProductData(
         widget.docId,
         titleController.text,
         price,
         stock,
         descriptioncontroller.text,
         imageName,
-        _image,
+        _image,s
       );
 
           

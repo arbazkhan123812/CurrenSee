@@ -87,7 +87,7 @@ class StorageService {
       );
       await _database.collection("products").doc(id).update(product.toMap());
 
-      if (imageName != null || image != null) {
+      if (imageName != null && image != null) {
         await uploadProductImage(id, image!, imageName!);
       }
 
