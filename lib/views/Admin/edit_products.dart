@@ -46,10 +46,12 @@ class _EditProductsState extends State<EditProducts> {
   void handleProductUpdate() async {
     if (!(_formkey.currentState?.validate() ?? false)) return;
     try {
+      setState(() => is_loading = true);
+
       final double price = double.tryParse(priceController.text.trim()) ?? 0;
       final int stock = int.tryParse(stockController.text.trim()) ?? 0;
 
-      var res = await _storageService.updateProductData(
+      bool res = await _storageService.updateProductData(
         widget.docId,
         titleController.text,
         price,
@@ -58,8 +60,19 @@ class _EditProductsState extends State<EditProducts> {
         imageName,
         _image,
       );
+
+      setState(() => is_loading = false);
+
+      if (res) {
+        Text( "Product updated successfully!");
+        goto(ViewProducts(), context);
+      } else {
+        Text( "Failed to update product. Try again.");
+      }
     } catch (e) {
-      e.toString();
+      setState(() => is_loading = false);
+      print("⚠️ handleProductUpdate error: $e");
+      Text( "Something went wrong: $e");
     }
   }
 
