@@ -58,11 +58,7 @@ class _EditProductsState extends State<EditProducts> {
         imageName,
         _image,
       );
-
-          
-     
     } catch (e) {
-
       e.toString();
     }
   }
@@ -114,7 +110,7 @@ class _EditProductsState extends State<EditProducts> {
                                     )
                                   : null), // no image
                         ),
-                        child: (_image == null || edit_image == null ) 
+                        child: (_image == null || edit_image == null)
                             ? Center(
                                 child: Text(
                                   "Upload Image",
