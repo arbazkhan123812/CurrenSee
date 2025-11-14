@@ -22,11 +22,12 @@ class _EditProductsState extends State<EditProducts> {
   TextEditingController descriptioncontroller = TextEditingController();
   TextEditingController priceController = TextEditingController();
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  bool is_loading = false;
   Uint8List? _image;
   String? edit_image;
   String? imageName;
-
+  bool is_loading = false;
+  String? error;
+  String? success;
   Future<String?> pickImage(ImageSource source) async {
     // Function to pick image from gallery or camera
     try {
@@ -43,9 +44,12 @@ class _EditProductsState extends State<EditProducts> {
     return null;
   }
 
-  void handleProductUpdate() async {
+  Future<void> handleProductUpdate() async {
     if (!(_formkey.currentState?.validate() ?? false)) return;
     try {
+      is_loading = true;
+      setState(() {});
+
       final double price = double.tryParse(priceController.text.trim()) ?? 0;
       final int stock = int.tryParse(stockController.text.trim()) ?? 0;
 
@@ -59,11 +63,15 @@ class _EditProductsState extends State<EditProducts> {
         _image,
       );
 
-          
-     
+      if (res) {
+        is_loading = false;
+        success = "Product has been Saved Successfully";
+        setState(() {});
+      }
     } catch (e) {
-
-      e.toString();
+      is_loading = false;
+      setState(() {});
+      error = e.toString();
     }
   }
 
@@ -114,7 +122,7 @@ class _EditProductsState extends State<EditProducts> {
                                     )
                                   : null), // no image
                         ),
-                        child: (_image == null || edit_image == null ) 
+                        child: (_image == null || edit_image == null)
                             ? Center(
                                 child: Text(
                                   "Upload Image",
@@ -190,18 +198,24 @@ class _EditProductsState extends State<EditProducts> {
                       },
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        handleProductUpdate();
+                      onPressed: () async {
+                        await handleProductUpdate();
+                        if (error != null) {
+                          showNotificationn("Error", error!, context,
+                              isError: true);
+                        } else if (success != null) {
+                          showNotificationn("Success", success!, context);
+                        }
                       },
                       child: is_loading
                           ? SizedBox(
-                              height: 20, // Height kam kiya
-                              width: 20, // Width kam kiya
+                              height: 20, 
+                              width: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth:
-                                    3, // Indicator ki thickness kam ki, taaki chota dikhe
+                                    3,
                                 valueColor: AlwaysStoppedAnimation<Color>(Colors
-                                    .white), // Agar default color visible na ho toh
+                                    .white), 
                               ),
                             )
                           : Text("Submit"),

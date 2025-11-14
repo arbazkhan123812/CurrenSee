@@ -60,14 +60,30 @@ class _AddProductState extends State<AddProduct> {
 
       if (res == true) {
         is_loading = false;
+        titleController.clear();
+        stockController.clear();
+        descriptioncontroller.clear();
+        priceController.clear();
+
         setState(() {});
         showNotificationn("success", "Product has been saved!", context);
       } else if (res == false) {
         is_loading = false;
+        titleController.clear();
+        stockController.clear();
+        descriptioncontroller.clear();
+        priceController.clear();
+
         setState(() {});
-        showNotificationn("error", "Product has not been saved!", isError: true, context);
+        showNotificationn(
+            "error", "Product has not been saved!", isError: true, context);
       } else {
         is_loading = false;
+        titleController.clear();
+        stockController.clear();
+        descriptioncontroller.clear();
+        priceController.clear();
+
         setState(() {});
         showNotificationn("error", res.toString(), context);
       }
@@ -214,9 +230,15 @@ class _AddProductState extends State<AddProduct> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(onPressed: (){
-        goto(ViewProducts(), context);
-      } , label: Icon(Iconsax.shop , color: Colors.white,),),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          goto(ViewProducts(), context);
+        },
+        label: Icon(
+          Iconsax.shop,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 

@@ -6,11 +6,42 @@ import 'package:my_project/services/storage_service.dart';
 import 'package:my_project/utils/helper.dart';
 import 'package:my_project/views/Admin/edit_products.dart';
 
-class ViewProducts extends StatelessWidget {
+class ViewProducts extends StatefulWidget {
   ViewProducts({super.key});
 
+  @override
+  State<ViewProducts> createState() => _ViewProductsState();
+}
+
+class _ViewProductsState extends State<ViewProducts> {
   final StorageService _storageService = StorageService();
+  bool is_loading = false;
+  bool delete_loading = false;
+  String? error;
+  String? success;
+  String? deleteerror;
+  String? deletesuccess;
+
   final AuthServices _auth = AuthServices();
+
+  Future<void> handleProductdelete(String id) async {
+    try {
+      delete_loading = true;
+      setState(() {});
+
+      final res = await _storageService.deleteproductData(id);
+
+      if (res) {
+        delete_loading = false;
+        deletesuccess = "Product has been deleted Successfully";
+        setState(() {});
+      }
+    } catch (e) {
+      delete_loading = false;
+      deleteerror = e.toString();
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +60,7 @@ class ViewProducts extends StatelessWidget {
         ),
       ),
       body: FutureBuilder(
-        future: _storageService.getproductdata(),
+        future: _storageService.getproductdata(null),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -239,7 +270,7 @@ class ViewProducts extends StatelessWidget {
                                       onPressed: () {
                                         // Delete action with confirmation
                                         _showDeleteConfirmation(
-                                            context, product);
+                                            context, entries[index].key);
                                       },
                                       child: Icon(
                                         Iconsax.trash,
@@ -265,7 +296,7 @@ class ViewProducts extends StatelessWidget {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, Map product) {
+  void _showDeleteConfirmation(BuildContext context, String docId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -292,21 +323,32 @@ class ViewProducts extends StatelessWidget {
               ),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[400],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red[400],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-              ),
-              onPressed: () {
-                // Implement delete logic here
-                Navigator.pop(context);
-              },
-              child: Text(
-                "Delete",
-                style: GoogleFonts.montserrat(color: Colors.white),
-              ),
-            ),
+                onPressed: () async {
+                  await handleProductdelete(docId);
+                  if (error != null) {
+                          showNotificationn("Error", deleteerror!, context,
+                              isError: true);
+                        } else if (success != null) {
+                          showNotificationn("Success", deletesuccess!, context);
+                        }
+                },
+                child: delete_loading
+                    ? SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Text("Delete")),
           ],
         );
       },

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:my_project/models/Products_model.dart';
@@ -68,7 +69,7 @@ class StorageService {
       throw e.toString();
     }
   }
-  Future<String> updateProductData(  
+  Future<bool> updateProductData(  
       String id,
       String productTitle,
       double productPrice,
@@ -77,23 +78,33 @@ class StorageService {
       String? imageName,
       Uint8List? image) async {
     try {
+       var olddata =  await getproductdata(id);
 
+      
       Product product = Product(
         id: id,
         productTitle: productTitle,
         productPrice: productPrice,
         productStock: productStock,
         productDescription: productDescription,
+        imageUrl: olddata['imageUrl']
       );
       await _database.collection("products").doc(id).update(product.toMap());
 
-      if (imageName != null || image != null) {
+      if (imageName != null && image != null) {
         await uploadProductImage(id, image!, imageName!);
       }
-
-      return "true";
+      return true;
     } catch (e) {
-     return e.toString();
+     throw e.toString();
+    }
+  }
+  Future<bool> deleteproductData( String id,) async {
+    try {
+      await _database.collection("products").doc(id).delete();
+      return true;
+    } catch (e) {
+     throw e.toString();
     }
   }
   // issy pehle hamary pas product upload honay ka banega phr image ka
@@ -118,8 +129,16 @@ class StorageService {
     }
   }
 
-  Future<Map<String,dynamic>> getproductdata()async{
+  Future<Map<String,dynamic>> getproductdata(String? id)async{
     try {
+      if(id!=null){
+        try {
+          var single = await _database.collection("products").doc(id).get();
+        return single.data()!;
+        } catch (e) {
+          e.toString();
+        }
+      }
      var data = await _database.collection("products").get();
 
      Map<String,dynamic> alldata = {};

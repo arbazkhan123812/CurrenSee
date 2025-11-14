@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: apptheme,
       debugShowCheckedModeBanner: false,
-      home: ViewProducts(),
+      home: AuthGate(),
     );
   }
 }
@@ -76,7 +76,6 @@ class AuthGate extends StatelessWidget {
               print("$key : $value");
             });
 
-            // ✅ Navigate based on admin field
             if (data['is_admin'] == 1) {
               return AdminNavigation();
             } else {
