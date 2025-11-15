@@ -61,130 +61,132 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          spacing: 13,
-          children: [
-            // heading
-            Text(
-              "Create Your account",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
-            Form(
-              key: _formkey,
-              child: Column(
-                spacing: 15,
+        child: SingleChildScrollView(
+          child: Column(
+            spacing: 13,
+            children: [
+              // heading
+              Text(
+                "Create Your account",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+              Form(
+                key: _formkey,
+                child: Column(
+                  spacing: 15,
+                  children: [
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Name",
+                        prefixIcon: Icon(Icons.person),
+                      ),
+                      controller: nameController,
+                      validator: FormValidations.validateName,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Email",
+                        prefixIcon: Icon(Icons.email),
+                      ),
+                      controller: emailController,
+                      // validator: FormValidations.validateEmail,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Phone",
+                        prefixIcon: Icon(Icons.phone),
+                      ),
+                      controller: phoneController,
+                      // validator: FormValidations.validatePhone,
+                    ),
+                    DropdownButtonFormField(
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.male),
+                        labelText: "Gender",
+                      ),
+                      onChanged: (value) {
+                        gender = value!;
+                        print(gender);
+                      },
+                      items:
+                          _gender.map((gender) {
+                            return DropdownMenuItem(
+                              child: Text(gender),
+                              value: gender,
+                            );
+                          }).toList(),
+                      validator: FormValidations.validateGender,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Address",
+                        prefixIcon: Icon(Icons.location_city),
+                      ),
+                      validator: FormValidations.validateaddress,
+                      controller: addressController,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Password",
+                        prefixIcon: Icon(Icons.lock),
+                      ),
+                      controller: passController,
+                      validator: FormValidations.validatePassword,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Confirm Password",
+                        prefixIcon: Icon(Icons.lock),
+                      ),
+                      controller: confirmpassController,
+                      validator: (value) {
+                        return FormValidations.confirmPassword(
+                          value,
+                          passController.text,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    var res = await handleregisterpress();
+          
+                    if (res.isNotEmpty) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(res.toString())));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("user not registered")),
+                      );
+                    }
+                  },
+                  child: Text("Register"),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 5,
                 children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Name",
-                      prefixIcon: Icon(Icons.person),
-                    ),
-                    controller: nameController,
-                    validator: FormValidations.validateName,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      prefixIcon: Icon(Icons.email),
-                    ),
-                    controller: emailController,
-                    // validator: FormValidations.validateEmail,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Phone",
-                      prefixIcon: Icon(Icons.phone),
-                    ),
-                    controller: phoneController,
-                    // validator: FormValidations.validatePhone,
-                  ),
-                  DropdownButtonFormField(
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.male),
-                      labelText: "Gender",
-                    ),
-                    onChanged: (value) {
-                      gender = value!;
-                      print(gender);
-                    },
-                    items:
-                        _gender.map((gender) {
-                          return DropdownMenuItem(
-                            child: Text(gender),
-                            value: gender,
-                          );
-                        }).toList(),
-                    validator: FormValidations.validateGender,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Address",
-                      prefixIcon: Icon(Icons.location_city),
-                    ),
-                    validator: FormValidations.validateaddress,
-                    controller: addressController,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Password",
-                      prefixIcon: Icon(Icons.lock),
-                    ),
-                    controller: passController,
-                    validator: FormValidations.validatePassword,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Confirm Password",
-                      prefixIcon: Icon(Icons.lock),
-                    ),
-                    controller: confirmpassController,
-                    validator: (value) {
-                      return FormValidations.confirmPassword(
-                        value,
-                        passController.text,
+                  Text("Already Registered?", style: TextStyle(fontSize: 15)),
+                  GestureDetector(
+                    child: Text("Login Now"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
                       );
                     },
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () async {
-                  var res = await handleregisterpress();
-
-                  if (res.isNotEmpty) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(res.toString())));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("user not registered")),
-                    );
-                  }
-                },
-                child: Text("Register"),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 5,
-              children: [
-                Text("Already Registered?", style: TextStyle(fontSize: 15)),
-                GestureDetector(
-                  child: Text("Login Now"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

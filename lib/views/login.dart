@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_project/services/auth_services.dart';
+import 'package:my_project/utils/helper.dart';
 import 'package:my_project/utils/validations.dart';
 import 'package:my_project/views/Admin/admin_dashboard.dart';
 import 'package:my_project/views/Admin/admin_navigation.dart';
@@ -187,7 +188,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Create New Account", style: TextStyle(fontSize: 15)),
+                GestureDetector(child: Text("Create New Account", style: TextStyle(fontSize: 15)),onTap: (){
+                  goto(RegisterScreen(), context);
+                },),
               ],
             )
           ],
