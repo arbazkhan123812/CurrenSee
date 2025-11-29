@@ -81,7 +81,6 @@ class CurrencyService {
             .collection('users')
             .doc(user.uid)
             .collection('conversionHistory')
-            .orderBy('timestamp', descending: true)
             .get();
 
         return snapshot.docs
