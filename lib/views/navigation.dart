@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_project/views/cart.dart';
+import 'package:my_project/views/currency_screen.dart';
 import 'package:my_project/views/home_page.dart';
 import 'package:my_project/views/profile.dart';
 
 class NavigationPage extends StatefulWidget {
-   NavigationPage({super.key});
+  const NavigationPage({super.key});
 
   @override
   State<NavigationPage> createState() => _NavigationPageState();
@@ -13,35 +14,47 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   int currentindex = 0;
 
+  // Updated screens list with currency converter
+  final List<Widget> _mainScreens = [
+    HomePage(),
+    CartPage(),
+    CurrencyConverter(), // Add currency converter as a main tab
+    Profile(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
         index: currentindex,
-        children: [
-          
-          HomePage(),
-          CartPage(),
-          Profile(),
-        ],
+        children: _mainScreens,
       ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (value) {
-          currentindex = value;
           setState(() {
-            
+            currentindex = value;
           });
         },
         indicatorColor: Colors.indigo,
         selectedIndex: currentindex,
-        
         destinations: [
-          
-          NavigationDestination(icon: Icon(Icons.home,color: currentindex == 0 ? Colors.white : Colors.black ), label: "Home",),
-          NavigationDestination(icon: Icon(Icons.shopping_cart, color:  currentindex == 1 ? Colors.white : Colors.black ,), label: "My Cart"),
-          NavigationDestination(icon: Icon(Icons.person,color:  currentindex == 2 ? Colors.white : Colors.black ,), label: "Profile"),
-          
-        ]
+          NavigationDestination(
+            icon: Icon(Icons.home, color: currentindex == 0 ? Colors.white : Colors.black),
+            label: "Home",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.shopping_cart, color: currentindex == 1 ? Colors.white : Colors.black),
+            label: "My Cart",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.currency_exchange, color: currentindex == 2 ? Colors.white : Colors.black),
+            label: "Currency",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person, color: currentindex == 3 ? Colors.white : Colors.black),
+            label: "Profile",
+          ),
+        ],
       ),
     );
   }
