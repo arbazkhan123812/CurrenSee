@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "81722094019",
-    "project_id": "myproject-581ca",
-    "storage_bucket": "myproject-581ca.firebasestorage.app"
+    "project_number": "863026714670",
+    "project_id": "curren-see-d15bc",
+    "storage_bucket": "curren-see-d15bc.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:81722094019:android:0e8bd1a3494b91da9ecd76",
+        "mobilesdk_app_id": "1:863026714670:android:fdc58071c45b140c4367bf",
         "android_client_info": {
           "package_name": "com.example.my_project"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCEitr5gXpvetYlTCuRy43qRbL62LY7xC8"
+          "current_key": "AIzaSyDljFVgN230NVG8taPloqTfHiidABuQuDM"
         }
       ],
       "services": {
