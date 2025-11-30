@@ -3,6 +3,32 @@ import 'package:my_project/services/auth_services.dart';
 import 'package:my_project/utils/validations.dart';
 import 'package:my_project/views/login.dart';
 
+// --- COLOR AND DECORATION CONSTANTS (FOR ENHANCEMENT) ---
+const Color kPurpleColor = Color.fromARGB(255, 56, 18, 123);
+const Color kLightPurpleColor = Color.fromARGB(255, 179, 157, 219);
+
+InputDecoration kFormFieldDecoration({String? labelText, IconData? icon}) {
+  return InputDecoration(
+    labelText: labelText,
+    labelStyle: const TextStyle(color: kPurpleColor),
+    prefixIcon: icon != null ? Icon(icon, color: kPurpleColor) : null,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      borderSide: const BorderSide(color: kPurpleColor),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      borderSide: const BorderSide(color: kPurpleColor, width: 2.0),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      borderSide: const BorderSide(color: kLightPurpleColor),
+    ),
+  );
+}
+
+// --------------------------------------------------------
+
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({super.key});
 
@@ -57,86 +83,114 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Register")),
+      // --- ENHANCEMENT: AppBar color set to purple ---
+      appBar: AppBar(
+        title: const Text("Register", style: TextStyle(color: Colors.white)),
+        backgroundColor: kPurpleColor,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
 
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        // Increased padding for better visual spacing
+        padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
-            spacing: 13,
+            // Replaced custom spacing with standard SizedBox
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // heading
-              Text(
+              const Text(
                 "Create Your account",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 28, // Slightly larger font
+                  fontWeight: FontWeight.bold,
+                  color: kPurpleColor, // Set heading color to purple
+                ),
               ),
+              const SizedBox(height: 25), // Spacing after heading
+
               Form(
                 key: _formkey,
                 child: Column(
-                  spacing: 15,
+                  // Replaced custom spacing with standard SizedBox
                   children: [
                     TextFormField(
-                      decoration: InputDecoration(
+                      // --- ENHANCEMENT: Applied kFormFieldDecoration ---
+                      decoration: kFormFieldDecoration(
                         labelText: "Name",
-                        prefixIcon: Icon(Icons.person),
+                        icon: Icons.person,
                       ),
                       controller: nameController,
                       validator: FormValidations.validateName,
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: kFormFieldDecoration(
                         labelText: "Email",
-                        prefixIcon: Icon(Icons.email),
+                        icon: Icons.email,
                       ),
                       controller: emailController,
-                      // validator: FormValidations.validateEmail,
+                      validator: FormValidations.validateEmail,
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: kFormFieldDecoration(
                         labelText: "Phone",
-                        prefixIcon: Icon(Icons.phone),
+                        icon: Icons.phone,
                       ),
                       controller: phoneController,
-                      // validator: FormValidations.validatePhone,
+                      validator: FormValidations.validatePhone,
                     ),
+                    const SizedBox(height: 15),
                     DropdownButtonFormField(
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.male),
+                      // --- ENHANCEMENT: Applied kFormFieldDecoration ---
+                      decoration: kFormFieldDecoration(
+                        icon: Icons.male,
                         labelText: "Gender",
                       ),
+                      dropdownColor: Colors.white, // Ensure dropdown background is white
                       onChanged: (value) {
-                        gender = value!;
+                        setState(() { // Added setState to reflect selected gender immediately if needed
+                          gender = value!;
+                        });
                         print(gender);
                       },
-                      items:
-                          _gender.map((gender) {
-                            return DropdownMenuItem(
-                              child: Text(gender),
-                              value: gender,
-                            );
-                          }).toList(),
+                      items: _gender.map((gender) {
+                        return DropdownMenuItem(
+                          child: Text(gender),
+                          value: gender,
+                        );
+                      }).toList(),
                       validator: FormValidations.validateGender,
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: kFormFieldDecoration(
                         labelText: "Address",
-                        prefixIcon: Icon(Icons.location_city),
+                        icon: Icons.location_city,
                       ),
                       validator: FormValidations.validateaddress,
                       controller: addressController,
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
-                      decoration: InputDecoration(
+                      // Added obscureText for password fields
+                      obscureText: true,
+                      decoration: kFormFieldDecoration(
                         labelText: "Password",
-                        prefixIcon: Icon(Icons.lock),
+                        icon: Icons.lock,
                       ),
                       controller: passController,
                       validator: FormValidations.validatePassword,
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
-                      decoration: InputDecoration(
+                      // Added obscureText for password fields
+                      obscureText: true,
+                      decoration: kFormFieldDecoration(
                         labelText: "Confirm Password",
-                        prefixIcon: Icon(Icons.lock),
+                        icon: Icons.lock,
                       ),
                       controller: confirmpassController,
                       validator: (value) {
@@ -146,6 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         );
                       },
                     ),
+                    const SizedBox(height: 25), // Spacing before the button
                   ],
                 ),
               ),
@@ -155,27 +210,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: ElevatedButton(
                   onPressed: () async {
                     var res = await handleregisterpress();
-          
+
                     if (res.isNotEmpty) {
                       ScaffoldMessenger.of(
                         context,
                       ).showSnackBar(SnackBar(content: Text(res.toString())));
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("user not registered")),
+                        const SnackBar(content: Text("user not registered")),
                       );
                     }
                   },
-                  child: Text("Register"),
+                  // --- ENHANCEMENT: Button Style for Purple Theme ---
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kPurpleColor, // Button color
+                    foregroundColor: Colors.white, // Text color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  child: const Text(
+                    "Register",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
+              const SizedBox(height: 20), // Spacing after the button
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 5,
+                // Replaced custom spacing with standard SizedBox
                 children: [
-                  Text("Already Registered?", style: TextStyle(fontSize: 15)),
+                  const Text(
+                    "Already Registered?",
+                    style: TextStyle(fontSize: 15, color: Colors.black54), // Subtle text color
+                  ),
+                  const SizedBox(width: 5),
                   GestureDetector(
-                    child: Text("Login Now"),
+                    child: const Text(
+                      "Login Now",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: kPurpleColor, // Link color set to purple
+                      ),
+                    ),
                     onTap: () {
                       Navigator.push(
                         context,

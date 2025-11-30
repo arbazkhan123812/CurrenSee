@@ -17,7 +17,6 @@ class _NavigationPageState extends State<NavigationPage> {
   // Updated screens list with currency converter
   final List<Widget> _mainScreens = [
     HomePage(),
-    CartPage(),
     CurrencyConverter(), // Add currency converter as a main tab
     Profile(),
   ];
@@ -41,10 +40,6 @@ class _NavigationPageState extends State<NavigationPage> {
           NavigationDestination(
             icon: Icon(Icons.home, color: currentindex == 0 ? Colors.white : Colors.black),
             label: "Home",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.shopping_cart, color: currentindex == 1 ? Colors.white : Colors.black),
-            label: "My Cart",
           ),
           NavigationDestination(
             icon: Icon(Icons.currency_exchange, color: currentindex == 2 ? Colors.white : Colors.black),

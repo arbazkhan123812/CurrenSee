@@ -146,15 +146,7 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   );
                 },
-                child: Text(
-                  'My Project',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 1.2,
-                  ),
-                ),
+                
               ),
               SizedBox(height: 10),
               // Subtitle with fade animation
