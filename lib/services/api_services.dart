@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 class ApiService {
   // API Keys (Replace with your own keys)
-  static const String NEWS_API_KEY = 'YOUR_NEWSAPI_KEY';
+  static const String NEWS_API_KEY = '5e8c7aaec47144cb8e425213075687a7';
   static const String EXCHANGE_RATE_API_KEY = 'YOUR_EXCHANGERATE_API_KEY';
   static const String CRYPTO_API_KEY = 'YOUR_CRYPTO_API_KEY';
   
