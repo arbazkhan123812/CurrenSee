@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:my_project/models/Currency_news.dart';
 import 'package:my_project/models/Products_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -155,5 +156,41 @@ class StorageService {
     }
 
   }
+  // StorageService class mein ye functions add karen:
+
+Future<List<CurrencyNews>> getCurrencyNews() async {
+  try {
+    var response = await _database.collection("currency_news")
+      .orderBy('date', descending: true)
+      .limit(10)
+      .get();
+
+    List<CurrencyNews> newsList = [];
+    
+    for (var doc in response.docs) {
+      Map<String, dynamic> data = doc.data();
+      data['id'] = doc.id;
+      newsList.add(CurrencyNews.fromMap(data));
+    }
+    
+    return newsList;
+  } catch (e) {
+    throw e.toString();
+  }
+}
+
+Future<Map<String, dynamic>> getMarketTrends() async {
+  try {
+    // Ye demo data hai, aap apne API se real data fetch kar sakte hain
+    return {
+      'usd_to_pkr': {'rate': 278.5, 'change': 0.5, 'change_percent': 0.18},
+      'eur_to_pkr': {'rate': 302.3, 'change': -0.8, 'change_percent': -0.26},
+      'gbp_to_pkr': {'rate': 354.7, 'change': 1.2, 'change_percent': 0.34},
+      'updated_at': DateTime.now().toIso8601String(),
+    };
+  } catch (e) {
+    throw e.toString();
+  }
+}
   
 }
