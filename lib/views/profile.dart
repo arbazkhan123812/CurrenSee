@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:my_project/services/auth_services.dart';
 import 'package:my_project/services/storage_service.dart';
 import 'package:my_project/utils/helper.dart';
+import 'package:my_project/views/ai_chat_screen.dart';
 import 'package:my_project/views/login.dart';
 import 'package:my_project/views/register.dart';
 
@@ -70,11 +71,10 @@ class _ProfileState extends State<Profile> {
                     showNotificationn("Error", v.toString(), context);
                   });
                   Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                      (route) => false,
-                    );
-                  
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    (route) => false,
+                  );
                 } catch (e) {
                   e.toString();
                 }
@@ -112,8 +112,6 @@ class _ProfileState extends State<Profile> {
 
             final data = snapshot.data!;
             email = data['email'];
-
- 
 
             return Column(
               children: [
@@ -192,6 +190,24 @@ class _ProfileState extends State<Profile> {
                         leading: Icon(Icons.lock),
                         title: Text("Change Password"),
                         trailing: Icon(Icons.chevron_right),
+                      ),
+                    ),
+                    // Profile.dart file mein Card list ke ander ye card add karen:
+
+                    Card(
+                      color: Colors.amber.shade100,
+                      child: ListTile(
+                        leading:
+                            Icon(Icons.smart_toy, color: Colors.amber[800]),
+                        title: Text("AI Crypto Assistant"),
+                        trailing: Icon(Icons.chevron_right),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AIChatScreen()),
+                          );
+                        },
                       ),
                     ),
                     Card(
