@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("Financial Markets"),
         foregroundColor: Colors.white,
-        backgroundColor: Colors.blue[800],
+        backgroundColor:  Color.fromARGB(255, 56, 18, 123),
         elevation: 2,
         actions: [
           IconButton(
@@ -194,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
-                  color: Colors.blue[800],
+                  color:  Color.fromARGB(255, 56, 18, 123),
                 ),
               ),
               SizedBox(height: 4),
