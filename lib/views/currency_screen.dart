@@ -1,10 +1,16 @@
 // views/currency_converter.dart
 import 'package:flutter/material.dart';
-import 'package:my_project/models/currency_model.dart';
+import 'package:my_project/models/currency_model.dart'; 
 import 'package:my_project/services/currency_service.dart';
 import 'package:intl/intl.dart';
 import 'package:my_project/views/currency_conversion.dart';
 import 'package:my_project/views/currency_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+// NEW IMPORTS FOR RATE ALERT FEATURE
+import 'package:my_project/models/rate_alert_model.dart';
+import 'package:my_project/services/rate_alert_service.dart';
+
 
 class CurrencyConverter extends StatefulWidget {
   @override
@@ -13,6 +19,7 @@ class CurrencyConverter extends StatefulWidget {
 
 class _CurrencyConverterState extends State<CurrencyConverter> {
   final CurrencyService _currencyService = CurrencyService();
+  final RateAlertService _rateAlertService = RateAlertService(); // NEW SERVICE INSTANCE
   final TextEditingController _amountController = TextEditingController();
   
   Currency? _baseCurrency;
@@ -26,6 +33,10 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
   void initState() {
     super.initState();
     _loadCurrencies();
+    // New: Check for pending alerts when the screen loads using the new service
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _rateAlertService.checkRatesAndTriggerAlerts(context);
+    });
   }
 
   Future<void> _loadCurrencies() async {
@@ -149,6 +160,104 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
     _fetchExchangeRate();
   }
 
+  // ===================================
+  //           RATE ALERT UI/LOGIC
+  // ===================================
+
+  Future<void> _showSetAlertDialog() async {
+    if (_baseCurrency == null || _targetCurrency == null || _exchangeRate == 0.0) {
+      _showError('Please select currencies and fetch the current rate first.');
+      return;
+    }
+    
+    final TextEditingController thresholdController = TextEditingController();
+    
+    // Suggest the current rate + a small margin as default
+    thresholdController.text = (_exchangeRate * 1.05).toStringAsFixed(4);
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Set Rate Alert'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  'Current Rate: 1 ${_baseCurrency!.code} = ${_exchangeRate.toStringAsFixed(4)} ${_targetCurrency!.code}',
+                ),
+                SizedBox(height: 15),
+                TextField(
+                  controller: thresholdController,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    labelText: 'Threshold Rate (${_targetCurrency!.code})',
+                    hintText: 'Rate at which you want to be notified',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: Text('Set Alert'),
+              onPressed: () {
+                final threshold = double.tryParse(thresholdController.text);
+                if (threshold != null && threshold > 0) {
+                  _handleSetRateAlert(threshold);
+                  Navigator.of(context).pop();
+                } else {
+                  _showError('Please enter a valid rate threshold.');
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _handleSetRateAlert(double thresholdRate) async {
+    if (_baseCurrency == null || _targetCurrency == null) return;
+    
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      _showError('You must be logged in to set alerts.');
+      return;
+    }
+
+    final newAlert = RateAlert(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      userId: user.uid,
+      baseCurrency: _baseCurrency!.code,
+      targetCurrency: _targetCurrency!.code,
+      thresholdRate: thresholdRate,
+      isActive: true,
+      createdAt: DateTime.now(),
+    );
+
+    try {
+      // USING NEW RateAlertService
+      await _rateAlertService.saveRateAlert(newAlert); 
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Rate alert set for ${newAlert.baseCurrency}/${newAlert.targetCurrency} at ${thresholdRate.toStringAsFixed(4)}'),
+          backgroundColor: Colors.indigo,
+        ),
+      );
+    } catch (e) {
+      _showError('Failed to set rate alert: $e');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,6 +265,12 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
         title: Text('Currency Converter'),
         foregroundColor: Colors.white,
         actions: [
+          // New: Rate Alert Button
+          IconButton(
+            icon: Icon(Icons.notifications_active),
+            onPressed: _showSetAlertDialog,
+            tooltip: 'Set Rate Alert',
+          ),
           IconButton(
             icon: Icon(Icons.history),
             onPressed: () {
