@@ -8,6 +8,7 @@ import 'package:my_project/utils/helper.dart';
 import 'package:my_project/views/ai_chat_screen.dart';
 import 'package:my_project/views/login.dart';
 import 'package:my_project/views/register.dart';
+import 'package:my_project/views/report_issue_screen.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -195,10 +196,11 @@ class _ProfileState extends State<Profile> {
                     // Profile.dart file mein Card list ke ander ye card add karen:
 
                     Card(
-                      color: Colors.amber.shade100,
+                      color: Colors.indigo.shade200,
                       child: ListTile(
                         leading:
-                            Icon(Icons.smart_toy, color: Colors.amber[800]),
+                            Icon(Icons.smart_toy,                       color: Colors.indigo.shade200,
+),
                         title: Text("AI Crypto Assistant"),
                         trailing: Icon(Icons.chevron_right),
                         onTap: () {
@@ -206,6 +208,25 @@ class _ProfileState extends State<Profile> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => AIChatScreen()),
+                          );
+                        },
+                      ),
+                    ),
+                    Card(
+                      color: Colors.blue
+                          .shade100, // Use a distinct color for support/feedback
+                      child: ListTile(
+                        leading:
+                            const Icon(Icons.bug_report, color: Colors.blue),
+                        title: const Text("Report an Issue"),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () {
+                          // Navigate to the new ReportIssueScreen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const ReportIssueScreen()),
                           );
                         },
                       ),

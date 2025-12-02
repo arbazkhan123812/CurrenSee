@@ -448,18 +448,7 @@ class _HomePageState extends State<HomePage> {
           else
             ...newsList.take(5).map((news) => _buildNewsCard(news)).toList(),
           
-          if (newsList.length > 5)
-            Center(
-              child: Padding(
-                padding: EdgeInsets.only(top: 10),
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Navigate to all news page
-                  },
-                  child: Text("View All News"),
-                ),
-              ),
-            ),
+          
         ],
       ),
     );
